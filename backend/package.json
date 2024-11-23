@@ -5,9 +5,9 @@
   "scripts": {
     "test": "test",
     "start": "node index.js",
-    "dev": "nodemon= index.js"
+    "dev": "nodemon index.js"
   },
-  "author": "NIkita Servaiky",
+  "author": "Nikita Servaiky",
   "license": "ISC",
   "description": "",
   "dependencies": {
@@ -20,6 +20,8 @@
     "mongoose": "^8.7.2",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.15",
+    "passport": "^0.7.0",
+    "passport-facebook": "^3.0.0",
     "twilio": "^5.3.5"
   },
   "devDependencies": {

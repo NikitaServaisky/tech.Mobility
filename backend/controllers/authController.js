@@ -1,13 +1,15 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { sendRegistrationEmail } = require('../services/emailServices/emailService');
+/*const { sendRegistrationEmail } = require('../services/emailServices/emailService');
 const { sendRegistrationSMS } = require('../services/smsServices/smsService');
-const { verificationCodeTemplate } = require('../services/smsServices/smsTemplates');
+const { verificationCodeTemplate } = require('../services/smsServices/smsTemplates');*/
 require('dotenv').config();
 
-const generateVerificationCode = () => Math.floor(100000 + Math.random() * 900000);
+// ייצור קוד אימות אקראי
+//const generateVerificationCode = () => Math.floor(100000 + Math.random() * 900000);
 
+// רישום משתמש חדש
 const registerNewUser = async (req, res) => {
   const { email, password, firstName, lastName, phone, city } = req.body;
   if (!email || !password || !firstName || !lastName || !phone || !city) {
@@ -18,8 +20,7 @@ const registerNewUser = async (req, res) => {
     if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const verificationCode = generateVerificationCode();
-    console.log(verificationCode);
+   // const verificationCode = generateVerificationCode();
 
     const newUser = new User({
       email,
@@ -29,22 +30,22 @@ const registerNewUser = async (req, res) => {
       phone,
       city,
       role: (await User.countDocuments({})) === 0 ? 'admin' : 'user',
-      verificationCode,
-      isVerified: false,
+      /*verificationCode,*/
+      /*isVerified: false,*/
     });
 
     await newUser.save();
-    await sendRegistrationSMS(newUser.phone, verificationCodeTemplate(verificationCode));
-    res
-      .status(201)
-      .json({ message: 'User created. Verify your phone number.', userId: newUser._id });
+    //await sendRegistrationSMS(newUser.phone, verificationCodeTemplate(verificationCode));
+
+    res.status(201).json({ message: 'User created. Verify your phone number.', userId: newUser._id });
   } catch (err) {
-    console.error('Registration error', err);
+    console.error('Registration error:', err);
     res.status(500).json({ message: 'Error registering user' });
   }
 };
 
-const verificationUser = async (req, res) => {
+// אימות משתמש
+/*const verificationUser = async (req, res) => {
   const { userId, verificationCode } = req.body;
   try {
     const user = await User.findById(userId);
@@ -61,11 +62,12 @@ const verificationUser = async (req, res) => {
 
     res.status(200).json({ message: 'User verified', token, userId: user._id });
   } catch (err) {
-    console.error('Verification error', err);
+    console.error('Verification error:', err);
     res.status(500).json({ message: 'Error verifying user' });
   }
-};
+};*/
 
+// התחברות משתמש
 const userLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -77,13 +79,9 @@ const userLogin = async (req, res) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_WORD, { expiresIn: '1h' });
     res.status(200).json({ message: 'Login successful', token, userId: user._id });
   } catch (err) {
-    console.error('Login error', err);
+    console.error('Login error:', err);
     res.status(500).json({ message: 'Error logging in user' });
   }
 };
 
-module.exports = {
-  registerNewUser,
-  userLogin,
-  verificationUser,
-};
+module.exports = { registerNewUser, userLogin, /*verificationUser*/ };

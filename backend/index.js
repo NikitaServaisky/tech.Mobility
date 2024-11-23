@@ -1,16 +1,25 @@
 const express = require('express');
 const cors = require('cors');
+const passport = require('passport');
 const connectDB = require('./config/bd');
 const authRoutes = require('./routes/authRoutes');
 const usersRoutes = require('./routes/usersRoutes');
-require('dotenv').config();
+const passportConfig = require('./authtentications/passportConfig');
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 connectDB();
 
-// Define routes
+// הפעלת האימות של passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// הפעלת קונפיגורציה של passport
+passportConfig();
+
 app.use('/', authRoutes);
 app.use('/users', usersRoutes);
 
