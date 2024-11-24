@@ -13,11 +13,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 connectDB();
 
-// הפעלת האימות של passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// הפעלת קונפיגורציה של passport
 passportConfig();
 
 app.use('/', authRoutes);
