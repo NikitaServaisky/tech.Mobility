@@ -1,7 +1,8 @@
-const passport = require('passport');
-const facebookStrategy = require('./strategies/facebookStrategy');
-const User = require('../models/User')
-require('dotenv').config();
+const passport = require("passport");
+const facebookStrategy = require("./strategies/facebookStrategy");
+const googleStrategy = require("./strategies/googleStrategy");
+const User = require("../models/User");
+require("dotenv").config();
 
 module.exports = () => {
   passport.serializeUser((user, done) => done(null, user.id));
@@ -14,7 +15,7 @@ module.exports = () => {
     }
   });
 
-  // קובץ סטרטגיות
+  // import strategies
   facebookStrategy();
-  // אם תרצה להוסיף אסטרטגיה נוספת, פשוט תקרא לה כאן
+  googleStrategy();
 };
