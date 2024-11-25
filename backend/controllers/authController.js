@@ -1,3 +1,4 @@
+//authController
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -12,15 +13,18 @@ require('dotenv').config();
 // רישום משתמש חדש
 const registerNewUser = async (req, res) => {
   const { email, password, firstName, lastName, phone, city } = req.body;
+
   if (!email || !password || !firstName || !lastName || !phone || !city) {
     return res.status(400).json({ message: 'All fields are required' });
   }
+
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-   // const verificationCode = generateVerificationCode();
+
+    const profileImage = req.file ? req.file.path.replace(/\\/g, '/') : null;
 
     const newUser = new User({
       email,
@@ -29,20 +33,19 @@ const registerNewUser = async (req, res) => {
       lastName,
       phone,
       city,
+      profileImage,
       role: (await User.countDocuments({})) === 0 ? 'admin' : 'user',
-      /*verificationCode,*/
-      /*isVerified: false,*/
     });
 
     await newUser.save();
-    //await sendRegistrationSMS(newUser.phone, verificationCodeTemplate(verificationCode));
 
-    res.status(201).json({ message: 'User created. Verify your phone number.', userId: newUser._id });
+    res.status(201).json({ message: 'User created successfully.', userId: newUser._id });
   } catch (err) {
     console.error('Registration error:', err);
     res.status(500).json({ message: 'Error registering user' });
   }
 };
+
 
 // אימות משתמש
 /*const verificationUser = async (req, res) => {
