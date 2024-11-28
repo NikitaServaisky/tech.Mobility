@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false }, // האם המשתמש מאומת
   role: { 
     type: String, 
-    enum: ['owner', 'admin', 'driver', 'customer'], 
+    enum: ['owner', 'admin', 'driver', 'customer', 'deactivated'], 
     default: 'customer' 
   }, // תפקיד המשתמש
   createdAt: { type: Date, default: Date.now }, // תאריך יצירת החשבון

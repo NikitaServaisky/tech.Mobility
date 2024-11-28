@@ -2,7 +2,8 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-/*const { sendRegistrationEmail } = require('../services/emailServices/emailService');
+/*const transporter = require('../services/emailServices/transporter')
+const { sendRegistrationEmail } = require('../services/emailServices/emailService');
 const { sendRegistrationSMS } = require('../services/smsServices/smsService');
 const { verificationCodeTemplate } = require('../services/smsServices/smsTemplates');*/
 require('dotenv').config();
@@ -61,7 +62,8 @@ const registerNewUser = async (req, res) => {
     await user.save();
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_WORD, { expiresIn: '1h' });
-    await sendRegistrationEmail(user.email);
+    const emailContent = await sendRegistrationEmail(user);
+    await transporter.sendMail(emailContent);
 
     res.status(200).json({ message: 'User verified', token, userId: user._id });
   } catch (err) {
