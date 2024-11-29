@@ -4,6 +4,7 @@ const {
   profile,
   updateProfileImage,
   deactivateAccount,
+  reactivateAccount,
   deleteAccount,
 } = require("../controllers/usersController");
 const authMiddleware = require("../middlewars/authMiddleware");
@@ -19,4 +20,5 @@ router.post(
 );
 router.delete("/:id", authMiddleware , deleteAccount);
 router.put("/deactivate/:id", authMiddleware , deactivateAccount);
+router.put('/reactivate/:id/:token', reactivateAccount);
 module.exports = router;

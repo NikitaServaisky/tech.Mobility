@@ -16,7 +16,7 @@ const welcomeEmailTemplate = (name) => {
   };
 };
 
-const beforRemoveEmail = (user) => {
+const beforRemoveEmail = (user, link) => {
   return {
     from: process.env.EMAIL_USER,
     to: user.email,
@@ -27,7 +27,7 @@ const beforRemoveEmail = (user) => {
   קיבלנו את בקשתך למחוק את חשבונך לצמיתות ממאגרי החברה.
   
   אם ברצונך לעצור את תהליך המחיקה, אנא לחץ על הקישור הבא בתוך 7 ימים מיום קבלת המייל:
-  [הוסף קישור אמיתי כאן]
+  ${link}
 
   אם אינך מגיב למייל זה, אנו נמשיך בתהליך המחיקה ונמחק את כל המידע שלך ממאגרי החברה.
 

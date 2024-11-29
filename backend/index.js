@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
 const connectDB = require("./config/bd");
+const cron = require('./utils/cronJob');
 const authRoutes = require("./routes/authRoutes");
 const usersRoutes = require("./routes/usersRoutes");
 const passportConfig = require("./authtentications/passportConfig");

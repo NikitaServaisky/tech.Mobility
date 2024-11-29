@@ -1,10 +1,10 @@
 //usersController
 const User = require("../models/User");
-const transporter = require('../services/emailServices/transporter')
+const transporter = require("../services/emailServices/transporter");
 const {
   beforRemoveEmail,
 } = require("../services/emailServices/emailTamplates");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const profile = async (req, res) => {
   try {
@@ -62,8 +62,9 @@ const deactivateAccount = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized action" });
     }
 
-    const emailContent = await beforRemoveEmail(user);
-    await transporter.sendMail(emailContent);
+    const token = jwt.sign({ userId: id }, process.env.JWT_SECRET_WORD, {
+      expiresIn: "7d",
+    });
 
     const user = await User.findByIdAndUpdate(
       id,
@@ -75,12 +76,48 @@ const deactivateAccount = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    const link = `http://localhost:3000/rectivate/${id}/${token}`;
+
+    const emailContent = await beforRemoveEmail(user, link);
+    await transporter.sendMail(emailContent);
+
     return res
       .status(200)
       .json({ message: "User account deactivated successfully", user });
   } catch (err) {
     console.error("Error deactivating account:", err);
     res.status(500).json({ message: "Error deactivating account" });
+  }
+};
+
+const reactivateAccount = async (req, res) => {
+  const { id, token } = req.params;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_WORD);
+    if (decoded.userId !== id) {
+      return res.status(400).json({ message: "invalid token ot user ID" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { isVerified: true, role: "user", reactivatationToken: null },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Account rectivated successfuly", user });
+  } catch (err) {
+    console.error("Error reactivating account", err);
+    if (err.name === 'TokenExpiredError') {
+      return res.status(400).json({message: 'Token expired'})
+    }
+    res.status(500).json({ message: "Error reactivating account" });
   }
 };
 
@@ -108,5 +145,6 @@ module.exports = {
   profile,
   updateProfileImage,
   deactivateAccount,
+  reactivateAccount,
   deleteAccount,
 };
