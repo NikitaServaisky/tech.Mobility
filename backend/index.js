@@ -5,8 +5,10 @@ const passport = require("passport");
 const connectDB = require("./config/bd");
 const authRoutes = require("./routes/authRoutes");
 const usersRoutes = require("./routes/usersRoutes");
-const passportConfig = require("./authtentications/passportConfig");
+const historyRoutes = require("./routes/historyRoutes");
+const authMiddleware = require('./middlewars/authMiddleware');
 const createDirectories = require("./utils/createDirectories");
+const passportConfig = require('./authtentications/passportConfig')
 
 const app = express();
 
@@ -21,8 +23,9 @@ app.use(passport.session());
 
 passportConfig();
 
-app.use("/", authRoutes);
-app.use("/users", usersRoutes);
+app.use("/auth", authRoutes);
+app.use("/users", authMiddleware, usersRoutes);
+app.use("/rides", authMiddleware, historyRoutes);
 
 app.get("/", (req, res) => res.send("Hello from Express.js"));
 

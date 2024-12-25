@@ -34,7 +34,7 @@ const registerNewUser = async (req, res) => {
       phone,
       city,
       profileImage,
-      role: (await User.countDocuments({})) === 0 ? 'admin' : 'user',
+      role: (await User.countDocuments({})) === 0 ? 'owner' : 'customer',
     });
 
     await newUser.save();
@@ -48,7 +48,7 @@ const registerNewUser = async (req, res) => {
 
 
 // אימות משתמש
-/*const verificationUser = async (req, res) => {
+const verificationUser = async (req, res) => {
   const { userId, verificationCode } = req.body;
   try {
     const user = await User.findById(userId);
@@ -68,7 +68,7 @@ const registerNewUser = async (req, res) => {
     console.error('Verification error:', err);
     res.status(500).json({ message: 'Error verifying user' });
   }
-};*/
+};
 
 // התחברות משתמש
 const userLogin = async (req, res) => {
@@ -87,4 +87,4 @@ const userLogin = async (req, res) => {
   }
 };
 
-module.exports = { registerNewUser, userLogin, /*verificationUser*/ };
+module.exports = { registerNewUser, userLogin, verificationUser };

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const getDashboardUrlByRole = require('../utils/roleTodashboard');
 
 // Middleware מאוחד
 const authMiddleware = (req, res, next) => {
@@ -21,6 +22,8 @@ const authMiddleware = (req, res, next) => {
     if (req.params.id && req.params.id !== decoded.id) {
       return res.status(403).json({ message: 'Unauthorized action' });
     }
+
+    req.dashBoardUrl = getDashboardUrlByRole(req.user.role);
 
     return next();
   } catch (err) {

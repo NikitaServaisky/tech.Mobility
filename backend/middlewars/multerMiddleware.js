@@ -4,7 +4,14 @@ const path = require('path');
 // הגדרת אחסון הקבצים
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/profiles'); // התיקייה שבה יישמרו הקבצים
+    //dynamic folder selection based on route or custom logic
+    if (req.route.path.includes('pickupPhoto')) {
+      cb(null, 'uploads/pickupPhotos');
+    } else if (req.route.path.includes('profilePhoto')) {
+      cb(null, 'uploads/profiles');
+    } else {
+      cb(new Error('Invalid upload route'));
+    }
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);

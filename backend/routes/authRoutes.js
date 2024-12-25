@@ -4,14 +4,14 @@ const passport = require("passport");
 const upload = require('../middlewars/multerMiddleware');
 const {
   registerNewUser,
-  userLogin /*verificationUser*/,
+  userLogin, verificationUser,
 } = require("../controllers/authController");
 
 const router = express.Router();
 
 router.post("/registration", upload.single('profileImage'),registerNewUser);
 router.post("/login", userLogin);
-//router.post('/verification', verificationUser);
+router.post('/verification', verificationUser);
 //facebook routes
 router.get("/auth/facebook", passport.authenticate("facebook"));
 router.get('/auth/facebook/callback', passport.authenticate('facebook'), (req, res) => {
