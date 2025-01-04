@@ -5,12 +5,12 @@ const path = require('path');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     //dynamic folder selection based on route or custom logic
-    if (req.route.path.includes('pickupPhoto')) {
-      cb(null, 'uploads/pickupPhotos');
-    } else if (req.route.path.includes('profilePhoto')) {
+    if (req.route.path.includes('profile')) {
       cb(null, 'uploads/profiles');
+    } else if (req.route.path.includes('pickupPhoto')) {
+      cb(null, 'uploads/pickupPhotos');
     } else {
-      cb(new Error('Invalid upload route'));
+      return cb(new Error('Invalid route for file upload'));
     }
   },
   filename: (req, file, cb) => {

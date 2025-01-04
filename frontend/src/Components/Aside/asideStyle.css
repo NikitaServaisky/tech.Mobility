@@ -1,0 +1,25 @@
+aside{
+    background-color: aqua;
+    width: 33%;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    text-align: center;
+}
+
+.image_place {
+    margin: 60px auto;
+    width: 100px;
+    height: 100px;
+}
+
+/* .logo-icon {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+} */
